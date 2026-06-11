@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
+import { sendGAEvent } from "@next/third-parties/google";
 import styles from "./Game.module.css";
 
 const W = 360;
@@ -251,6 +252,11 @@ export default function Game() {
       launchSfx.currentTime = 0;
       launchSfx.play().catch(() => {});
       music.play().catch(() => {});
+      try {
+        sendGAEvent("event", "game_start", {
+          attempt: crashCountRef.current + 1,
+        });
+      } catch {}
     }
 
     apiRef.current = { startRun, prepare };
@@ -307,6 +313,12 @@ export default function Game() {
       crashCountRef.current += 1;
       // el póster sale en todas las derrotas
       setShowPoster(true);
+      try {
+        sendGAEvent("event", "game_over", {
+          score_meters: meters,
+          crash_count: crashCountRef.current,
+        });
+      } catch {}
       window.setTimeout(() => setGameOverVisible(true), 900);
     }
 

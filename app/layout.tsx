@@ -1,6 +1,9 @@
 import type { Metadata, Viewport } from "next";
 import { Press_Start_2P } from "next/font/google";
+import { GoogleAnalytics } from "@next/third-parties/google";
 import "./globals.css";
+
+const GA_ID = "G-31HYRXCKRG";
 
 const pressStart = Press_Start_2P({
   weight: "400",
@@ -28,6 +31,7 @@ export default function RootLayout({
   return (
     <html lang="es">
       <body className={pressStart.variable}>{children}</body>
+      {process.env.NODE_ENV === "production" && <GoogleAnalytics gaId={GA_ID} />}
     </html>
   );
 }
